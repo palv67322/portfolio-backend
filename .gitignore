@@ -1,0 +1,26 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Dependency directories (Sabse zaroori, isko GitHub pe nahi bhejte)
+node_modules/
+jspm_packages/
+
+# Environment variables (SABSE BADI ZAROORAT - Aapka Gmail password safe rahega)
+.env
+.env.test
+.env.production
+.env.local
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Mac OS System files
+.DS_Store
