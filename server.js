@@ -5,14 +5,24 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware
-app.use(express.json()); // Frontend se aane wale JSON data ko padhne ke liye
+// ==========================================
+// 🚀 ROBUST CORS SETUP
+// ==========================================
+// Vercel link agar .env me hai, toh uska aakhri slash (/) hata do error se bachne ke liye
+const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : 'http://localhost:5173';
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Vercel link yahan baad me aayega
+    origin: [frontendUrl, 'http://localhost:5173'], // Localhost aur Vercel dono allowed
+    methods: ['GET', 'POST'], // Sirf ye methods allowed hain
     credentials: true
 }));
 
-// Nodemailer Transporter Setup
+// Middleware
+app.use(express.json()); 
+
+// ==========================================
+// 📧 NODEMAILER SETUP
+// ==========================================
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -30,10 +40,9 @@ app.post('/api/contact', async (req, res) => {
     }
 
     try {
-        // Aapko aane wala email kaisa dikhega
         const mailOptions = {
             from: process.env.EMAIL_USER,
-            to: process.env.EMAIL_USER, // Data aapke hi email par aayega
+            to: process.env.EMAIL_USER, 
             subject: `Portfolio: New Message from ${name}`,
             html: `
                 <h3>New Contact Request</h3>
@@ -53,7 +62,9 @@ app.post('/api/contact', async (req, res) => {
     }
 });
 
+// Server Start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`CORS is allowing requests from: ${frontendUrl}`);
 });
