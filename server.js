@@ -3,21 +3,25 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
+// ==========================================
+// 🚀 RENDER IPv6 FIX (Sabse Zaroori)
+// ==========================================
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first'); // Yeh Render ko force karega normal IPv4 use karne ke liye
+
 const app = express();
 
 // ==========================================
 // 🚀 ROBUST CORS SETUP
 // ==========================================
-// Vercel link agar .env me hai, toh uska aakhri slash (/) hata do error se bachne ke liye
 const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : 'http://localhost:5173';
 
 app.use(cors({
-    origin: [frontendUrl, 'http://localhost:5173'], // Localhost aur Vercel dono allowed
-    methods: ['GET', 'POST'], // Sirf ye methods allowed hain
+    origin: [frontendUrl, 'http://localhost:5173'],
+    methods: ['GET', 'POST'],
     credentials: true
 }));
 
-// Middleware
 app.use(express.json()); 
 
 // ==========================================
@@ -31,7 +35,6 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// API Route: Jab koi contact form bharega
 app.post('/api/contact', async (req, res) => {
     const { name, email, message } = req.body;
 
@@ -62,9 +65,8 @@ app.post('/api/contact', async (req, res) => {
     }
 });
 
-// Server Start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log(`CORS is allowing requests from: ${frontendUrl}`);
+    console.log(`CORS allowed for: ${frontendUrl}`);
 });
